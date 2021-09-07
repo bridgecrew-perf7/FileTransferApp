@@ -8,7 +8,7 @@ import (
 )
 
 type user struct {
-	MyFile *multipart.FileHeader `form:"myfile" binding:"required"`
+	MyFile *multipart.FileHeader `form:"file" binding:"required"`
 }
 
 func main() {
