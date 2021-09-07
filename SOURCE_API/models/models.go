@@ -13,3 +13,7 @@ type Source struct {
 	SourceLink    string             `json:"sourcelink,omitempty" bson:"sourcelink,omitempty"`
 	Timestamp     time.Time          `json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 }
+type Deployment struct {
+	SourceLink      string `json:"sourcelink,omitempty" bson:"sourcelink,omitempty"`
+	DestinationLink string `json:"destinationlink,omitempty" bson:"destinationlink,omitempty"`
+}

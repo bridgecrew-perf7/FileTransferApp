@@ -8,11 +8,12 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prajwal-scorpionking123/SENDER/helpers"
-	"github.com/prajwal-scorpionking123/SENDER/models"
+	"github.com/prajwal-scorpionking123/SOURCE_API/helpers"
+	"github.com/prajwal-scorpionking123/SOURCE_API/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -43,42 +44,74 @@ func GetSources(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"sources": sources})
 }
-func SendFiles(c *gin.Context) {
+
+func DeployFiles(c *gin.Context) {
+	var deployMeta models.Deployment
+	if err := c.Bind(&deployMeta); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	//creating client object
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 	// c.FileAttachment("./assets/go/m.go", "m.go")
+
 	body := &bytes.Buffer{}
+
 	writer := multipart.NewWriter(body)
-	fw, err := writer.CreateFormFile("file", "m.txt")
+
+	//opering the source file to be deplyed
+	file, err := os.Open(deployMeta.SourceLink)
+
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"err": "failed",
+			"err": "source file not found",
 		})
+		return
+
 	}
-	file, err := os.Open("./assets/go/m.txt")
+	fileName := filepath.Base(file.Name())
+	println(fileName)
+
+	// creating the form field
+	fw, err := writer.CreateFormFile("file", fileName)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": "failed",
 		})
+		return
+
 	}
 	_, err = io.Copy(fw, file)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": "failed",
 		})
+		return
+
 	}
 	writer.Close()
-	req, err := http.NewRequest("POST", "http://localhost:8080/sendfile", bytes.NewReader(body.Bytes()))
+
+	//calling the production api to deploy the soruce file
+	req, err := http.NewRequest("POST", "http://localhost:8080/api/deployFiles", bytes.NewReader(body.Bytes()))
+
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"err": "failed",
 		})
+		return
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
+
 	rsp, _ := client.Do(req)
+
 	if rsp.StatusCode != http.StatusOK {
 		log.Printf("Request failed with response code: %d", rsp.StatusCode)
+		c.JSON(rsp.StatusCode, gin.H{
+			"Request failed with response code": rsp.Status,
+		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": "OK",

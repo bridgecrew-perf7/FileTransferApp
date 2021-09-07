@@ -1,4 +1,4 @@
-module github.com/prajwal-scorpionking123/SENDER
+module github.com/prajwal-scorpionking123/SOURCE_API
 
 go 1.15
 
