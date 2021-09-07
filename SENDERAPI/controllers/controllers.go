@@ -38,6 +38,6 @@ func GetSources(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"sources": sources})
 }
-func SendFiles(ctx *gin.Context) {
-
+func SendFiles(c *gin.Context) {
+	c.FileAttachment("./assets/go/m.go", "m.go")
 }
