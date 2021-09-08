@@ -21,6 +21,24 @@ import (
 var DB *mongo.Database = helpers.ConnectToMongoDB()
 var collection *mongo.Collection = DB.Collection("Source")
 
+func PostLink(c *gin.Context) {
+
+	c.Header("content-type", "application/json")
+
+	var source models.Source
+
+	if err := c.Bind(&source); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	source.Timestamp = time.Now()
+	res, err := collection.InsertOne(context.TODO(), source)
+	if err != nil {
+		helpers.GetError(err, c)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"source": res})
+}
 func GetSources(c *gin.Context) {
 	c.Header("content-type", "application/json")
 	var sources []models.Source
