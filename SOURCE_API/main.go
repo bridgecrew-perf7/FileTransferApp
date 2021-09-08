@@ -7,7 +7,7 @@ import (
 
 func main() {
 	router := gin.Default()
-	router.Static("/SOURCE", "./SOURCE")
+	router.Static("../SOURCE", "../SOURCE")
 	router.POST("/api/postlink", controllers.PostLink)
 	router.GET("/api/getSources", controllers.GetSources)
 	router.POST("/api/deployFiles", controllers.DeployFiles)

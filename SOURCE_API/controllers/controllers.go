@@ -21,6 +21,16 @@ import (
 var DB *mongo.Database = helpers.ConnectToMongoDB()
 var collection *mongo.Collection = DB.Collection("Source")
 
+//checking whether file in that entered path is exist or not
+func FileExists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}
+
 func PostLink(c *gin.Context) {
 
 	c.Header("content-type", "application/json")
@@ -32,6 +42,10 @@ func PostLink(c *gin.Context) {
 		return
 	}
 	source.Timestamp = time.Now()
+	if !FileExists(source.SourceLink) {
+		c.JSON(http.StatusBadRequest, gin.H{"Bad file path": "there is no file entered path"})
+		return
+	}
 	res, err := collection.InsertOne(context.TODO(), source)
 	if err != nil {
 		helpers.GetError(err, c)

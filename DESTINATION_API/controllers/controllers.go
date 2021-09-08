@@ -16,7 +16,7 @@ func DeployeFiles(c *gin.Context) {
 	}
 	fileName := filepath.Base(fileMeta.File.Filename)
 	println(fileName)
-	err := c.SaveUploadedFile(fileMeta.File, "./PRODUCTION/"+fileName)
+	err := c.SaveUploadedFile(fileMeta.File, "../PRODUCTION/"+fileName)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "unknown error")
 		println(err)

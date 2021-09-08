@@ -11,7 +11,7 @@ func main() {
 
 	r.POST("api/deployFiles", controllers.DeployeFiles)
 
-	r.Static("/PRODUCTION", "./PRODUCTION")
+	r.Static("../PRODUCTION", "../PRODUCTION")
 
 	r.Run(":3002")
 }
