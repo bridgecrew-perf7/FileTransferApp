@@ -112,7 +112,7 @@ func DeployFiles(c *gin.Context) {
 	writer.Close()
 
 	//calling the production api to deploy the soruce file
-	req, err := http.NewRequest("POST", "http://localhost:8080/api/deployFiles", bytes.NewReader(body.Bytes()))
+	req, err := http.NewRequest("POST", "http://localhost:3002/api/deployFiles", bytes.NewReader(body.Bytes()))
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
