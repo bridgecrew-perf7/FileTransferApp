@@ -43,7 +43,7 @@ func PostLink(c *gin.Context) {
 	}
 	source.Timestamp = time.Now()
 	if !FileExists(source.SourceLink) {
-		c.JSON(http.StatusBadRequest, gin.H{"Bad file path": "there is no file entered path"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "there is no file entered path"})
 		return
 	}
 	res, err := collection.InsertOne(context.TODO(), source)
