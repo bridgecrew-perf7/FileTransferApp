@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"archive/zip"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -21,6 +22,11 @@ func DeployeFiles(c *gin.Context) {
 	}
 	fileName := filepath.Base(fileMeta.File.Filename)
 	println(fileName)
+	isAlreadyThere, _ := isExists(fileName)
+	println(isAlreadyThere)
+	if isAlreadyThere {
+		takeBackup(fileName)
+	}
 	err := c.SaveUploadedFile(fileMeta.File, "../PRODUCTION/"+fileName)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "unknown error")
@@ -36,10 +42,23 @@ func DeployeFiles(c *gin.Context) {
 
 //fucion for taking the backup
 func BackupFiles(c *gin.Context) {
-	ZipWriter()
+	// ZipWriter()
 }
 
 //helper function here
+func isExists(name string) (bool, error) {
+	_, err := os.Stat("../PRODUCTION/" + name)
+	if err == nil {
+		return true, nil
+	}
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	}
+	return false, err
+}
+func takeBackup(filename string) {
+	ZipWriter(filename)
+}
 func addFiles(w *zip.Writer, basePath, baseInZip string) {
 	// Open the Directory
 	files, err := ioutil.ReadDir(basePath)
@@ -75,7 +94,7 @@ func addFiles(w *zip.Writer, basePath, baseInZip string) {
 		}
 	}
 }
-func ZipWriter() {
+func ZipWriter(filename string) {
 	baseFolder := "../PRODUCTION/"
 	output := "../BACKUP/bamu"
 
@@ -84,7 +103,7 @@ func ZipWriter() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	outFile, err := os.Create("../BACKUP/bamu/dubackup.zip")
+	outFile, err := os.Create("../BACKUP/" + filename + ".zip")
 	if err != nil {
 		fmt.Println(err)
 	}
