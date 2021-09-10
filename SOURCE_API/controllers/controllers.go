@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prajwal-scorpionking123/SOURCE_API/helpers"
-	"github.com/prajwal-scorpionking123/SOURCE_API/models"
+	"github.com/team_six/SOURCE_API/helpers"
+	"github.com/team_six/SOURCE_API/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )

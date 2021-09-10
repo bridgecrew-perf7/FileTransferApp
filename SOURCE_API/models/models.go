@@ -18,3 +18,14 @@ type Deployment struct {
 	SourceLink      string `json:"sourcelink,omitempty" bson:"sourcelink,omitempty"`
 	DestinationLink string `json:"destinationlink,omitempty" bson:"destinationlink,omitempty"`
 }
+type Login struct {
+	Username string `json:"Username"`
+	Password string `json:"Password"`
+}
+type UserObject struct {
+	FirstName    string
+	LastName     string
+	MobileNumber string
+	Email        string
+	Username     string
+}
