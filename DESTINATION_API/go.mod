@@ -1,4 +1,4 @@
-module github.com/prajwal-scorpionking123/DESTINATION_API
+module github.com/team_six/DESTINATION_API
 
 go 1.15
 

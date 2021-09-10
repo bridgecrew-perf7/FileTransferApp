@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/prajwal-scorpionking123/DESTINATION_API/controllers"
+	"github.com/team_six/DESTINATION_API/controllers"
 
 	"github.com/gin-gonic/gin"
 )

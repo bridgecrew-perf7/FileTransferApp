@@ -9,9 +9,37 @@ import (
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prajwal-scorpionking123/DESTINATION_API/models"
+	"github.com/team_six/DESTINATION_API/models"
 )
 
+//deploy single file controller
+func DeployeFiles(c *gin.Context) {
+	var fileMeta models.FileMeta
+	if err := c.ShouldBind(&fileMeta); err != nil {
+		c.String(http.StatusBadRequest, "bad request")
+		return
+	}
+	fileName := filepath.Base(fileMeta.File.Filename)
+	println(fileName)
+	err := c.SaveUploadedFile(fileMeta.File, "../PRODUCTION/"+fileName)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "unknown error")
+		println(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+		"data":   fileMeta,
+	})
+}
+
+//fucion for taking the backup
+func BackupFiles(c *gin.Context) {
+	ZipWriter()
+}
+
+//helper function here
 func addFiles(w *zip.Writer, basePath, baseInZip string) {
 	// Open the Directory
 	files, err := ioutil.ReadDir(basePath)
@@ -77,27 +105,4 @@ func ZipWriter() {
 	if err != nil {
 		fmt.Println(err)
 	}
-}
-func DeployeFiles(c *gin.Context) {
-	var fileMeta models.FileMeta
-	if err := c.ShouldBind(&fileMeta); err != nil {
-		c.String(http.StatusBadRequest, "bad request")
-		return
-	}
-	fileName := filepath.Base(fileMeta.File.Filename)
-	println(fileName)
-	err := c.SaveUploadedFile(fileMeta.File, "../PRODUCTION/"+fileName)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "unknown error")
-		println(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-		"data":   fileMeta,
-	})
-}
-func BackupFiles(c *gin.Context) {
-	ZipWriter()
 }
