@@ -15,5 +15,10 @@ func main() {
 	router.POST("/api/deployFiles", controllers.DeployFiles)
 	router.POST("/api/login", authcontroller.Auth)
 	router.POST("/api/otpmail", emailcontroller.OtpMail)
+
+	router.PUT("/api/isverified/:id", controllers.ToggleVarified)
+	router.PUT("/api/isrequested/:id", controllers.ToggleRequested)
+	router.PUT("/api/isapproved/:id", controllers.ToggleApproved)
+
 	router.Run(":3001")
 }
